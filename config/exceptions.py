@@ -73,12 +73,15 @@ def _traduci_testo(testo):
     return testo
 
 
+CHIAVI_API = frozenset({"detail", "non_field_errors"})
+
+
 def _traduci_dati(dati):
     if isinstance(dati, list):
         return [_traduci_testo(item) if isinstance(item, str) else _traduci_dati(item) for item in dati]
     if isinstance(dati, dict):
         return {
-            CAMPI.get(chiave, chiave): _traduci_dati(valore)
+            (chiave if chiave in CHIAVI_API else CAMPI.get(chiave, chiave)): _traduci_dati(valore)
             for chiave, valore in dati.items()
         }
     if isinstance(dati, str):

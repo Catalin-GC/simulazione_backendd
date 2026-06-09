@@ -182,8 +182,19 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.onrender.com',
-    'https://*.vercel.app',
+    'https://.onrender.com',
+    'https://.vercel.app',
 ]
+if _render_host:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{_render_host}')
 if FRONTEND_URL:
     CSRF_TRUSTED_ORIGINS.append(FRONTEND_URL)
+
+# Dopo il login dalla Browsable API (/api-auth/login/) torna alla root API
+LOGIN_REDIRECT_URL = '/api/'
+LOGOUT_REDIRECT_URL = '/api-auth/login/'
+
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
